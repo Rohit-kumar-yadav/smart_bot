@@ -87,12 +87,13 @@ def get_previous_news():
 # Function to send news item to a chat and a channel
 async def send_news_item(context, chat_id, CHANNEL_USERNAME, news_item):
     link = news_item["link"]
-    metadata = fetch_metadata(link)
-    title = metadata["title"]
-    description = metadata["description"]
-    image_url = metadata["image_url"]
-    airdrop_channel_url = "https://t.me/magical_alpha"
-    if link not in sent_news_links:
+    if link not in sent_news_links:  # Check if the link has already been sent
+        metadata = fetch_metadata(link)
+        title = metadata["title"]
+        description = metadata["description"]
+        image_url = metadata["image_url"]
+        airdrop_channel_url = "https://t.me/magical_alpha"
+        
         message = f"📰 {title}\n\n{description}\n\n[Read More]({link}) | [Airdrop Channel]({airdrop_channel_url})" 
 
         try:
@@ -184,6 +185,19 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info("Price command triggered")  # Debugging output
     if context.args:
         coin_name = context.args[0].lower()  # Get the coin name from the command arguments
+        
+        # Mapping of common abbreviations to full names
+        coin_mapping = {
+            "eth": "ethereum",
+            "btc": "bitcoin",
+            "ltc": "litecoin",
+            # Add more mappings as needed
+        }
+        
+        # Use the mapping if the coin name is an abbreviation
+        if coin_name in coin_mapping:
+            coin_name = coin_mapping[coin_name]
+        
         coin_data = get_coin_data(coin_name)
         
         if isinstance(coin_data, str):  # Check if an error message was returned
@@ -217,12 +231,7 @@ async def auto_post_news(context: ContextTypes.DEFAULT_TYPE):
     for news_item in news_list:
         link = news_item.get("link")  # Ensure we get the link safely
         
-        # Check if the link is valid before proceeding
-        if not link:
-            logger.error("No valid link found for news item.")
-            continue  # Skip to the next news item if the link is invalid
-        
-        if link not in sent_news_links:  # Check if it's already sent
+        if link and link not in sent_news_links:  # Check if the link is valid and not already sent
             metadata = fetch_metadata(link)
             title = metadata["title"]
             description = metadata["description"]
