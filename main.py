@@ -146,7 +146,9 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "/start - Start the bot and receive updates.",
         "/help - Show this help message.",
         "/news - Get the latest news.",
-        "/previous_news - Get the Previous news."
+        "/previous_news - Get the Previous news.",
+        "/test_auto_post - Test auto post.",
+        "/price <coin_name> - Get price"
     )
     await update.message.reply_text("Available commands:\n" + "\n".join(commands))
 
@@ -262,7 +264,7 @@ async def test_auto_post(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def main():
     # Create the Application with your bot token
     application = ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).build()
-    application.job_queue.run_repeating(auto_post_news, interval=60, first=1)
+    application.job_queue.run_repeating(auto_post_news, interval=300, first=1)
     # Command to start the bot
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
