@@ -264,7 +264,7 @@ async def test_auto_post(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def main():
     # Create the Application with your bot token
     application = ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).build()
-    application.job_queue.run_repeating(auto_post_news, interval=300, first=1)
+    application.job_queue.run_repeating(auto_post_news, interval=600, first=1)
     # Command to start the bot
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
